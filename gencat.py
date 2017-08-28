@@ -7,6 +7,9 @@ import numpy as np
 class SourceCatalog(ddosa.DataAnalysis):
     catalog=[]
 
+    def main(self):
+        print("my catalog:",self.catalog)
+
 class GenCat(ddosa.DataAnalysis):
     input_catalog=SourceCatalog
 
