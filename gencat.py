@@ -4,10 +4,13 @@ import ddosa
 import astropy.io.fits as pyfits
 import numpy as np
 
-class GenCat(ddosa.DataAnalysis):
-    output_structure=None
-
+class SourceCatalog(ddosa.DataAnalysis):
     catalog=[]
+
+class GenCat(ddosa.DataAnalysis):
+    input_catalog=SourceCatalog
+
+    output_structure=None
 
     def main(self):
         catfn="generated_cat.fits"
@@ -19,11 +22,11 @@ class GenCat(ddosa.DataAnalysis):
 
         cat=pyfits.open(catfn)
 
-        nd=np.zeros(len(self.catalog),dtype=cat[self.output_structure].data.dtype)
+        nd=np.zeros(len(self.input_catalog.catalog),dtype=cat[self.output_structure].data.dtype)
 
-        print(self.catalog)
+        print(self.input_catalog.catalog)
 
-        for i,cat_entry in enumerate(self.catalog):
+        for i,cat_entry in enumerate(self.input_catalog.catalog):
             self.map_entry_to_fits_record(cat_entry,nd[i])
 
         cat[self.output_structure].data=nd

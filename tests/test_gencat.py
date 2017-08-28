@@ -6,7 +6,7 @@ def test_imcat():
     import ddosa
     import gencat
 
-    cat=gencat.CatFotImage()
+    cat=gencat.SourceCatalog()
     cat.catalog=[
         dict(
                 NAME="TEST_SOURCE",
@@ -15,9 +15,10 @@ def test_imcat():
              )
     ]
     cat.promote()
-    cat.get()
 
-    d=pyfits.open(cat.cat.get_path())[1].data
+    gcat=gencat.CatForImage().get()
+
+    d=pyfits.open(gcat.cat.get_path())[1].data
 
     assert len(d)==1
     assert d[0]['NAME']==cat.catalog[0]['NAME']
