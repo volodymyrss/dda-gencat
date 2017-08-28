@@ -15,6 +15,8 @@ class GenCat(ddosa.DataAnalysis):
     def main(self):
         catfn="generated_cat.fits"
 
+        ddosa.remove_withtemplate(catfn+"("+self.output_structure+".tpl)")
+
         dc=ddosa.heatool("dal_create")
         dc['obj_name']=catfn
         dc['template']=self.output_structure+".tpl"
