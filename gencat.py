@@ -15,6 +15,8 @@ class GenCat(ddosa.DataAnalysis):
 
     output_structure=None
 
+    cached=True
+
     def main(self):
         catfn="generated_cat.fits"
 
