@@ -5,7 +5,7 @@ import astropy.io.fits as pyfits
 import numpy as np
 
 class SourceCatalog(ddosa.DataAnalysis):
-    catalog=[]
+    #catalog=[]
 
     def main(self):
         print("my catalog:",self.catalog)
