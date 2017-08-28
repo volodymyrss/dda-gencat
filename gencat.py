@@ -32,7 +32,7 @@ class GenCat(ddosa.DataAnalysis):
         self.cat = ddosa.DataFile(catfn)
 
 
-class CatFotImage(GenCat):
+class CatForImage(GenCat):
     output_structure = "ISGR-SRCL-CAT"
 
     def map_entry_to_fits_record(self,cat_entry,fits_record):
