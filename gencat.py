@@ -3,7 +3,7 @@ from __future__ import print_function
 import ddosa
 import astropy.io.fits as pyfits
 import numpy as np
-from hashtools import shhash
+from dataanalysis.hashtools import shhash
 
 class SourceCatalog(ddosa.DataAnalysis):
     #catalog=[]
