@@ -3,9 +3,18 @@ from __future__ import print_function
 import ddosa
 import astropy.io.fits as pyfits
 import numpy as np
+from hashtools import shhash
 
 class SourceCatalog(ddosa.DataAnalysis):
     #catalog=[]
+
+    autoversion=True
+
+    def get_version(self):
+        v=self.get_signature()+"."+self.version
+        if self.autoversion and hasattr(self,'catalog'):
+            v+=".%i.%s"%(len(self.catalog),shhash(repr(self.catalog)))
+        return v
 
     def main(self):
         print("my catalog:",self.catalog)
