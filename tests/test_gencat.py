@@ -143,3 +143,14 @@ def test_catextract_grcat():
     assert d[0]['NAME']==cat.catalog[0]['NAME']
     assert d[0]['RA_OBJ']==cat.catalog[0]['RA']
     assert d[0]['DEC_OBJ'] == cat.catalog[0]['DEC']
+
+    im = ddosa.ii_skyimage(use_read_caches=[]).get()
+
+    d=pyfits.open(im.skyres.get_path())[2].data
+    assert len(d['NAME']) >= 1
+    assert d[0]['NAME'] == cat.catalog[0]['NAME']
+    assert d[0]['RA_OBJ'] == cat.catalog[0]['RA']
+    assert d[0]['DEC_OBJ'] == cat.catalog[0]['DEC']
+
+
+
