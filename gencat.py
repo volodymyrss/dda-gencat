@@ -18,9 +18,10 @@ class GenCat(ddosa.DataAnalysis):
     cached=True
 
     cat_attribute="cat"
+    suffix=""
 
     def main(self):
-        catfn="generated_cat.fits"
+        catfn="generated_cat%s.fits"%self.suffix
 
         ddosa.remove_withtemplate(catfn+"("+self.output_structure+".tpl)")
 
@@ -47,6 +48,7 @@ class GRcat(GenCat):
     output_structure = "GNRL-REFR-CAT"
 
     cat_attribute="_cat"
+    suffix = "_grcat"
 
     def map_entry_to_fits_record(self,cat_entry,fits_record):
         fits_record['RA_OBJ']=cat_entry['RA']
@@ -63,10 +65,11 @@ class GRcat(GenCat):
         return self._cat.get_path()
 
 class ISGRIRefCat(GRcat):
-    pass
+    suffix = "_igrcat"
 
 class CatForImage(GenCat):
     output_structure = "ISGR-SRCL-CAT"
+    suffix = "_forimage"
 
     def map_entry_to_fits_record(self,cat_entry,fits_record):
         fits_record['RA_OBJ']=cat_entry['RA']
@@ -78,6 +81,7 @@ class CatForImage(GenCat):
 
 class CatForSpectra(GenCat):
     output_structure = "ISGR-SRCL-RES"
+    suffix = "_forspectra"
 
     def map_entry_to_fits_record(self, cat_entry, fits_record):
         fits_record['RA_FIN'] = cat_entry['RA']
