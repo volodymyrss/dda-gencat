@@ -288,3 +288,27 @@ def test_mosaic_ii_skyimage():
     assert d[0]['NAME'] == cat.catalog[0]['NAME']
     assert d[0]['RA_FIN'] == cat.catalog[0]['RA']
     assert d[0]['DEC_FIN'] == cat.catalog[0]['DEC']
+
+
+
+def test_spectra_sum():
+    da.reset()
+    import process_isgri_spectra
+    import ddosa
+    import gencat
+
+    cat = gencat.SourceCatalog()
+    cat.catalog = [
+        dict(
+            NAME="TEST_SOURCE",
+            RA=83,
+            DEC=22,
+        )
+    ]
+    cat.promote()
+
+    process_isgri_spectra.ScWSpectraList(input_scwlist=ddosa.IDScWList(use_scwid_list=["066500330010.001","066500340010.001"])).promote()
+    iss=process_isgri_spectra.ISGRISpectraSum(use_extract_all=True)
+
+
+    iss.get()

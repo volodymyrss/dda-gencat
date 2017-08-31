@@ -98,5 +98,6 @@ class CatForSpectra(GenCat):
         fits_record['NAME'] = cat_entry['NAME']
         fits_record['SOURCE_ID'] = cat_entry['NAME']
 
+
 class ii_spectra_extract(ddosa.ii_spectra_extract):
     input_cat=CatForSpectra
