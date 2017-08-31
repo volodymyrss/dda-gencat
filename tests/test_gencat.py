@@ -154,3 +154,75 @@ def test_catextract_grcat():
 
 
 
+def test_catforspec_tospec():
+    import ddosa
+    import gencat
+
+    cat=gencat.SourceCatalog()
+    cat.catalog=[
+        dict(
+                NAME="TEST_SOURCE",
+                RA=83,
+                DEC=22,
+             )
+    ]
+    cat.promote()
+
+    ddosa.ScWData(input_scwid="066500220010.001").get().promote()
+
+    gcat=gencat.CatForSpectra().get()
+    d=pyfits.open(gcat.cat.get_path())[1].data
+
+    assert len(d)==1
+    assert d[0]['NAME']==cat.catalog[0]['NAME']
+    assert d[0]['RA_FIN']==cat.catalog[0]['RA']
+    assert d[0]['DEC_FIN'] == cat.catalog[0]['DEC']
+
+    spec = ddosa.ii_spectra_extract(input_cat=gencat.CatForSpectra,use_read_caches=[]).get()
+
+    assert hasattr(spec,'spectrum')
+    d=pyfits.open(spec.spectrum.get_path())
+
+    print d[1].data
+
+    assert len(d[1].data) == 1+1
+    assert len(d[2:])==1+1
+
+    assert d[2].header['NAME']==cat.catalog[0]['NAME']
+
+def test_catforspec_tolc():
+    import ddosa
+    import gencat
+
+    cat=gencat.SourceCatalog()
+    cat.catalog=[
+        dict(
+                NAME="TEST_SOURCE",
+                RA=83,
+                DEC=22,
+             )
+    ]
+    cat.promote()
+
+    ddosa.ScWData(input_scwid="066500220010.001").get().promote()
+
+    gcat=gencat.CatForSpectra().get()
+    d=pyfits.open(gcat.cat.get_path())[1].data
+
+    assert len(d)==1
+    assert d[0]['NAME']==cat.catalog[0]['NAME']
+    assert d[0]['RA_FIN']==cat.catalog[0]['RA']
+    assert d[0]['DEC_FIN'] == cat.catalog[0]['DEC']
+
+    lc = ddosa.ii_lc_extract(input_cat=gencat.CatForSpectra,use_read_caches=[]).get()
+
+    assert hasattr(lc,'lightcurve')
+    d=pyfits.open(lc.lightcurve.get_path())
+
+    print d[1].data
+
+    assert len(d[1].data) == 1
+    assert len(d[2:])==1
+
+    assert d[2].header['NAME']==cat.catalog[0]['NAME']
+
