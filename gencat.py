@@ -73,7 +73,7 @@ class GRcat(GenCat):
     def cat(self):
         return self._cat.get_path()
 
-class ISGRIRefCat(GRcat):
+class ExplicitISGRIRefCat(GRcat):
     suffix = "_igrcat"
 
 class CatForImage(GenCat):
