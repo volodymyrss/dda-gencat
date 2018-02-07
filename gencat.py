@@ -13,7 +13,7 @@ class SourceCatalog(ddosa.DataAnalysis):
     def get_version(self):
         v=self.get_signature()+"."+self.version
         if self.autoversion and hasattr(self,'catalog'):
-            v+=".%i.%s"%(len(self.catalog),shhash(repr(self.catalog)))
+            v+=".%i.%s"%(len(self.catalog),shhash(repr(sorted(self.catalog.items(),key=lambda x:x[0]))))
         return v
 
     def main(self):
