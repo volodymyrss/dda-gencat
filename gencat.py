@@ -3,6 +3,7 @@ from __future__ import print_function
 import ddosa
 import astropy.io.fits as pyfits
 import numpy as np
+import json
 from dataanalysis.hashtools import shhash
 
 class SourceCatalog(ddosa.DataAnalysis):
@@ -13,7 +14,8 @@ class SourceCatalog(ddosa.DataAnalysis):
     def get_version(self):
         v=self.get_signature()+"."+self.version
         if self.autoversion and hasattr(self,'catalog'):
-            v+=".%i.%s"%(len(self.catalog),shhash(repr([sorted(k.items()) for k in sorted(self.catalog,key=lambda x:x['NAME'])])))
+            cat_hs=shhash(json.dumps([sorted(k.items()) for k in sorted(self.catalog,key=lambda x:x['NAME'])]))
+            v+=".N_%i.%s"%(len(self.catalog),cat_hs)
         return v
 
     def main(self):
