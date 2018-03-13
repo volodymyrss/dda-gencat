@@ -11,9 +11,9 @@ class SourceCatalog(ddosa.DataAnalysis):
     autoversion=True
 
     def get_version(self):
-        v=self.get_signature()+"."+self.version
+        version=self.get_signature()+"."+self.version
         if self.autoversion and hasattr(self,'catalog'):
-            v+=".%i"%len(self.catalog)
+            version+=".%i"%len(self.catalog)
 
             c_v=[]
             for e in sorted(self.catalog,key=lambda x:x['NAME']):
@@ -27,9 +27,9 @@ class SourceCatalog(ddosa.DataAnalysis):
                         e_v.append("%s_%s"%(str(k),str(v)))
                 c_v.append("_".join(e_v))
 
-            c_v_s=".".join(c_v)
-            v+="."+cvs[:100]+"_"+shhash(cvs)
-        return v
+            cvs=".".join(c_v)
+            version+="."+cvs[:100]+"_"+shhash(cvs)[:8]
+        return version
 
     def main(self):
         print("my catalog:",self.catalog)
