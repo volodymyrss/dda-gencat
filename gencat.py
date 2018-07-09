@@ -107,11 +107,16 @@ class CatForSpectra(GenCat):
     output_structure = "ISGR-SRCL-RES"
     suffix = "_forspectra"
 
+    version="v1"
+
     def map_entry_to_fits_record(self, cat_entry, fits_record):
+        fits_record['RA_OBJ'] = cat_entry['RA']
+        fits_record['DEC_OBJ'] = cat_entry['DEC']
         fits_record['RA_FIN'] = cat_entry['RA']
         fits_record['DEC_FIN'] = cat_entry['DEC']
         fits_record['NAME'] = cat_entry['NAME']
         fits_record['SOURCE_ID'] = cat_entry['NAME']
+        fits_record['ISGRI_FLAG'] = 1
 
 class CatForLC(CatForSpectra):
     suffix = "_forlc"
