@@ -88,6 +88,27 @@ class GRcat(GenCat):
     def cat(self):
         return self._cat.get_path()
 
+class GRcatForJEMX(GenCat):
+    output_structure = "GNRL-REFR-CAT"
+
+    cat_attribute="_cat"
+    suffix = "_grcat_jemx"
+
+    def map_entry_to_fits_record(self,cat_entry,fits_record):
+        fits_record['RA_OBJ']=cat_entry['RA']
+        fits_record['DEC_OBJ'] = cat_entry['DEC']
+        fits_record['NAME'] = cat_entry['NAME']
+        fits_record['SOURCE_ID'] = cat_entry['NAME']
+        fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG',1)
+        fits_record['ISGRI_FLAG2'] = cat_entry.get('ISGRI_FLAG', 0)
+        fits_record['ISGR_FLUX_1'] = cat_entry.get('ISGRI_FLUX_1', 1000)
+        fits_record['ISGR_FLUX_2'] = cat_entry.get('ISGRI_FLUX_2', 1000)
+        fits_record['FLAG'] = cat_entry.get('FLAG', 0)
+
+    @property
+    def cat(self):
+        return self._cat.get_path()
+
 class ExplicitISGRIRefCat(GRcat):
     suffix = "_igrcat"
 
