@@ -10,6 +10,7 @@ class SourceCatalog(ddosa.DataAnalysis):
 
     autoversion=True
 
+
     def get_version(self):
         version=self.get_signature()+"."+self.version
         if self.autoversion and hasattr(self,'catalog'):
@@ -93,7 +94,7 @@ class GRcatForJEMX(GenCat):
 
     cat_attribute="_cat"
     suffix = "_grcat_jemx"
-
+    
     def map_entry_to_fits_record(self,cat_entry,fits_record):
         fits_record['RA_OBJ']=cat_entry['RA']
         fits_record['DEC_OBJ'] = cat_entry['DEC']
@@ -107,7 +108,7 @@ class GRcatForJEMX(GenCat):
 
     @property
     def cat(self):
-        return self._cat.get_path()
+        return self._cat
 
 class ExplicitISGRIRefCat(GRcat):
     suffix = "_igrcat"
