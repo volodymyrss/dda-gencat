@@ -149,6 +149,21 @@ class ii_spectra_extract(ddosa.ii_spectra_extract):
 class ii_lc_extract(ddosa.ii_lc_extract):
     input_cat=CatForSpectra
 
+try:
+    import ddjemx
+    class UserCat(ddjemx.UserCat):
+        input_cat = GRcatForJEMX
+
+    class jemx_spe(ddjemx.jemx_spe):
+        input_usercat=UserCat
+
+    class jemx_lcr(ddjemx.jemx_lcr):
+        input_usercat=UserCat
+
+except Exception as e:
+    print("not loading jemx")
+        
+
 import dataanalysis.callback
 
 dataanalysis.callback.default_callback_filter.set_callback_accepted_classes([ii_spectra_extract, ii_lc_extract])
