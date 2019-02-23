@@ -36,6 +36,7 @@ class SourceCatalog(ddosa.DataAnalysis):
         print("my catalog:",self.catalog)
 
 class GenCat(ddosa.DataAnalysis):
+
     input_catalog=SourceCatalog
 
     output_structure=None
@@ -70,6 +71,8 @@ class GenCat(ddosa.DataAnalysis):
         setattr(self,self.cat_attribute,ddosa.DataFile(catfn))
 
 class GRcat(GenCat):
+    version="v2"
+
     output_structure = "GNRL-REFR-CAT"
 
     cat_attribute="_cat"
