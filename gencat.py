@@ -87,7 +87,7 @@ class GRcat(GenCat):
 
     @property
     def cat(self):
-        return self._cat.get_path()
+        return self._cat.get_full_path()
 
 class GRcatForJEMX(GenCat):
     output_structure = "GNRL-REFR-CAT"
