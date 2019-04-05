@@ -5,6 +5,8 @@ import astropy.io.fits as pyfits
 import numpy as np
 from dataanalysis.hashtools import shhash
 
+import dataanalysis.core as da
+
 class SourceCatalog(ddosa.DataAnalysis):
     #catalog=[]
 
@@ -153,14 +155,14 @@ class ii_lc_extract(ddosa.ii_lc_extract):
     input_cat=CatForSpectra
 
 try:
-    import ddjemx
-    class UserCat(ddjemx.UserCat):
+
+    class UserCat(da.byname('UserCat')):
         input_cat = GRcatForJEMX
 
-    class jemx_spe(ddjemx.jemx_spe):
+    class jemx_spe(da.byname('jemx_spe')):
         input_usercat=UserCat
 
-    class jemx_lcr(ddjemx.jemx_lcr):
+    class jemx_lcr(da.byname('jemx_lcr')):
         input_usercat=UserCat
 
 except Exception as e:
