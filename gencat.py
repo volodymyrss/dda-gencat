@@ -22,7 +22,9 @@ class SourceCatalog(ddosa.DataAnalysis):
             for e in sorted(self.catalog,key=lambda x:x['NAME']):
                 e_v=[]
                 for k,v in sorted(e.items()):
-                    if isinstance(v,float):
+                    if k == "NAME":
+                        e_v.append("%s_%s"%(str(k),str(v)))
+                    elif isinstance(v,float):
                         e_v.append("%s_%.5lg"%(str(k),v))
                     elif isinstance(v,int):
                         e_v.append("%s_%i"%(str(k),v))
