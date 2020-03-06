@@ -113,6 +113,9 @@ class GRcatForJEMX(GenCat):
         fits_record['ISGR_FLUX_2'] = cat_entry.get('ISGRI_FLUX_2', 1000)
         fits_record['FLAG'] = cat_entry.get('FLAG', 0)
 
+        print("NAME", fits_record['NAME'])
+        print("flags", fits_record['FLAG'])
+
     @property
     def cat(self):
         return self._cat
@@ -157,19 +160,19 @@ class ii_lc_extract(ddosa.ii_lc_extract):
     input_cat=CatForSpectra
 
 try:
+    import ddjemx
 
-    class UserCat(da.byname('UserCat')):
-        input_cat = GRcatForJEMX
+    class UserCat(ddjemx.UserCat):
+        input_cat=GRcatForJEMX
 
-    class jemx_spe(da.byname('jemx_spe')):
+    class jemx_spe(ddjemx.jemx_spe):
         input_usercat=UserCat
 
-    class jemx_lcr(da.byname('jemx_lcr')):
+    class jemx_lcr(ddjemx.jemx_lcr):
         input_usercat=UserCat
 
 except Exception as e:
     print("not loading jemx")
-        
 
 import dataanalysis.callback
 
