@@ -70,7 +70,7 @@ class GenCat(ddosa.DataAnalysis):
             self.map_entry_to_fits_record(cat_entry,nd[i])
 
         cat[self.output_structure].data=nd
-        cat.writeto(catfn,clobber=True)
+        cat.writeto(catfn,overwrite=True)
 
         setattr(self,self.cat_attribute,ddosa.DataFile(catfn))
 
