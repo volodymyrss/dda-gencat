@@ -95,6 +95,7 @@ class GRcat(GenCat):
         fits_record['SOURCE_ID'] = cat_entry['NAME']
         fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG', 1)
         fits_record['JEMX_FLAG'] = cat_entry.get('JEMX_FLAG', 1)
+        fits_record['FLAG'] = cat_entry.get('FLAG', 0)
         fits_record['ISGRI_FLAG2'] = cat_entry.get('ISGRI_FLAG', 0)
         fits_record['ISGR_FLUX_1'] = cat_entry.get('ISGRI_FLUX_1', 1000)
         fits_record['ISGR_FLUX_2'] = cat_entry.get('ISGRI_FLUX_2', 1000)
