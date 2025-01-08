@@ -87,7 +87,8 @@ class GRcat(GenCat):
         fits_record['DEC_OBJ'] = cat_entry['DEC']
         fits_record['NAME'] = cat_entry['NAME']
         fits_record['SOURCE_ID'] = cat_entry['NAME']
-        fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG',1)
+        fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG', 1)
+        fits_record['JEMX_FLAG'] = cat_entry.get('JEMX_FLAG', 1)
         fits_record['ISGRI_FLAG2'] = cat_entry.get('ISGRI_FLAG', 0)
         fits_record['ISGR_FLUX_1'] = cat_entry.get('ISGRI_FLUX_1', 1000)
         fits_record['ISGR_FLUX_2'] = cat_entry.get('ISGRI_FLUX_2', 1000)
@@ -107,7 +108,8 @@ class GRcatForJEMX(GenCat):
         fits_record['DEC_OBJ'] = cat_entry['DEC']
         fits_record['NAME'] = cat_entry['NAME']
         fits_record['SOURCE_ID'] = cat_entry['NAME']
-        fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG',1)
+        fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG', 1)
+        fits_record['JEMX_FLAG'] = cat_entry.get('JEMX_FLAG', 1)
         fits_record['ISGRI_FLAG2'] = cat_entry.get('ISGRI_FLAG', 0)
         fits_record['ISGR_FLUX_1'] = cat_entry.get('ISGRI_FLUX_1', 1000)
         fits_record['ISGR_FLUX_2'] = cat_entry.get('ISGRI_FLUX_2', 1000)
@@ -132,7 +134,8 @@ class CatForImage(GenCat):
         fits_record['DEC_OBJ'] = cat_entry['DEC']
         fits_record['NAME'] = cat_entry['NAME']
         fits_record['SOURCE_ID'] = cat_entry['NAME']
-        fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG',1)
+        fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG', 1)
+        fits_record['FLAG'] = cat_entry.get('FLAG', 0)
 
 
 class CatForSpectra(GenCat):
@@ -148,7 +151,8 @@ class CatForSpectra(GenCat):
         fits_record['DEC_FIN'] = cat_entry['DEC']
         fits_record['NAME'] = cat_entry['NAME']
         fits_record['SOURCE_ID'] = cat_entry['NAME']
-        fits_record['ISGRI_FLAG'] = 1
+        fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG', 1)
+        fits_record['FLAG'] = cat_entry.get('FLAG', 1)
 
 class CatForLC(CatForSpectra):
     suffix = "_forlc"
@@ -177,4 +181,3 @@ except Exception as e:
 import dataanalysis.callback
 
 dataanalysis.callback.default_callback_filter.set_callback_accepted_classes([ii_spectra_extract, ii_lc_extract])
-
