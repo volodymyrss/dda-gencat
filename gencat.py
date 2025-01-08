@@ -9,6 +9,7 @@ import dataanalysis.callback
 
 
 class SourceCatalog(ddosa.DataAnalysis):
+    # Why is this commented out ?
     # catalog = []
 
     autoversion = True
