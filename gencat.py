@@ -55,29 +55,32 @@ class GenCat(ddosa.DataAnalysis):
     suffix = ""
 
     def main(self):
-        catfn = "generated_cat%s.fits" % self.suffix
+        if hasattr(self.input_catalog, 'catalog'):
+            catfn = "generated_cat%s.fits" % self.suffix
 
-        ddosa.remove_withtemplate(catfn+"("+self.output_structure+".tpl)")
+            ddosa.remove_withtemplate(catfn+"("+self.output_structure+".tpl)")
 
-        dc = ddosa.heatool("dal_create")
-        dc['obj_name'] = catfn
-        dc['template'] = self.output_structure+".tpl"
-        dc.run()
+            dc = ddosa.heatool("dal_create")
+            dc['obj_name'] = catfn
+            dc['template'] = self.output_structure+".tpl"
+            dc.run()
 
-        cat = pyfits.open(catfn)
+            cat = pyfits.open(catfn)
 
-        nd = np.zeros(len(self.input_catalog.catalog),
-                      dtype=cat[self.output_structure].data.dtype)
+            nd = np.zeros(len(self.input_catalog.catalog),
+                          dtype=cat[self.output_structure].data.dtype)
 
-        print(self.input_catalog.catalog)
+            print(self.input_catalog.catalog)
 
-        for i, cat_entry in enumerate(self.input_catalog.catalog):
-            self.map_entry_to_fits_record(cat_entry, nd[i])
+            for i, cat_entry in enumerate(self.input_catalog.catalog):
+                self.map_entry_to_fits_record(cat_entry, nd[i])
 
-        cat[self.output_structure].data = nd
-        cat.writeto(catfn, overwrite=True)
+            cat[self.output_structure].data = nd
+            cat.writeto(catfn, overwrite=True)
 
-        setattr(self, self.cat_attribute, ddosa.DataFile(catfn))
+            setattr(self, self.cat_attribute, ddosa.DataFile(catfn))
+        else:
+            print('GenCat not produced as input_catalog does not exist')
 
 
 class GRcat(GenCat):
