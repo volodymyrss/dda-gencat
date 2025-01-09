@@ -106,7 +106,10 @@ class GRcat(GenCat):
 
     @property
     def cat(self):
-        return self._cat.get_full_path()
+        if hasattr(self, '_cat'):
+            return self._cat.get_full_path()
+        else:
+            return None
 
 
 class GRcatForJEMX(GenCat):
@@ -132,7 +135,10 @@ class GRcatForJEMX(GenCat):
 
     @property
     def cat(self):
-        return self._cat
+        if hasattr(self, '_cat'):
+            return self._cat
+        else:
+            return None
 
 
 class ExplicitISGRIRefCat(GRcat):
