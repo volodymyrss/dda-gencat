@@ -4,107 +4,122 @@ import ddosa
 import astropy.io.fits as pyfits
 import numpy as np
 from dataanalysis.hashtools import shhash
+# import dataanalysis.core as da
+import dataanalysis.callback
 
-import dataanalysis.core as da
 
 class SourceCatalog(ddosa.DataAnalysis):
-    #catalog=[]
+    # Why is this commented out ?
+    # catalog = []
 
-    autoversion=True
-
+    autoversion = True
 
     def get_version(self):
-        version=self.get_signature()+"."+self.version
-        if self.autoversion and hasattr(self,'catalog'):
-            version+=".%i"%len(self.catalog)
+        version = self.get_signature()+"."+self.version
+        if self.autoversion and hasattr(self, 'catalog'):
+            version += ".%i" % len(self.catalog)
 
-            c_v=[]
-            for e in sorted(self.catalog,key=lambda x:x['NAME']):
-                e_v=[]
-                for k,v in sorted(e.items()):
+            c_v = []
+            for e in sorted(self.catalog, key=lambda x: x['NAME']):
+                e_v = []
+                for k, v in sorted(e.items()):
                     if k == "NAME":
-                        e_v.append("%s_%s"%(str(k),str(v)))
-                    elif isinstance(v,float):
-                        e_v.append("%s_%.5lg"%(str(k),v))
-                    elif isinstance(v,int):
-                        e_v.append("%s_%i"%(str(k),v))
+                        e_v.append("%s_%s" % (str(k), str(v)))
+                    elif isinstance(v, float):
+                        e_v.append("%s_%.5lg" % (str(k), v))
+                    elif isinstance(v, int):
+                        e_v.append("%s_%i" % (str(k), v))
                     else:
-                        e_v.append("%s_%s"%(str(k),str(v)))
+                        e_v.append("%s_%s" % (str(k), str(v)))
                 c_v.append("_".join(e_v))
 
-            cvs=".".join(c_v)
-            version+="."+cvs[:100]+"_"+shhash(cvs)[:8]
+            cvs = ".".join(c_v)
+            version += "."+cvs[:100]+"_"+shhash(cvs)[:8]
         return version
 
     def main(self):
-        print("my catalog:",self.catalog)
+        if hasattr(self, 'catalog'):
+            print("my catalog:", self.catalog)
+        else:
+            print('Empty_catalog')
+
 
 class GenCat(ddosa.DataAnalysis):
 
-    input_catalog=SourceCatalog
+    input_catalog = SourceCatalog
 
-    output_structure=None
+    output_structure = None
 
-    cached=True
+    cached = True
 
-    cat_attribute="cat"
-    suffix=""
+    cat_attribute = "cat"
+    suffix = ""
 
     def main(self):
-        catfn="generated_cat%s.fits"%self.suffix
+        if hasattr(self.input_catalog, 'catalog'):
+            catfn = "generated_cat%s.fits" % self.suffix
 
-        ddosa.remove_withtemplate(catfn+"("+self.output_structure+".tpl)")
+            ddosa.remove_withtemplate(catfn+"("+self.output_structure+".tpl)")
 
-        dc=ddosa.heatool("dal_create")
-        dc['obj_name']=catfn
-        dc['template']=self.output_structure+".tpl"
-        dc.run()
+            dc = ddosa.heatool("dal_create")
+            dc['obj_name'] = catfn
+            dc['template'] = self.output_structure+".tpl"
+            dc.run()
 
-        cat=pyfits.open(catfn)
+            cat = pyfits.open(catfn)
 
-        nd=np.zeros(len(self.input_catalog.catalog),dtype=cat[self.output_structure].data.dtype)
+            nd = np.zeros(len(self.input_catalog.catalog),
+                          dtype=cat[self.output_structure].data.dtype)
 
-        print(self.input_catalog.catalog)
+            print(self.input_catalog.catalog)
 
-        for i,cat_entry in enumerate(self.input_catalog.catalog):
-            self.map_entry_to_fits_record(cat_entry,nd[i])
+            for i, cat_entry in enumerate(self.input_catalog.catalog):
+                self.map_entry_to_fits_record(cat_entry, nd[i])
 
-        cat[self.output_structure].data=nd
-        cat.writeto(catfn,overwrite=True)
+            cat[self.output_structure].data = nd
+            cat.writeto(catfn, overwrite=True)
 
-        setattr(self,self.cat_attribute,ddosa.DataFile(catfn))
+            setattr(self, self.cat_attribute, ddosa.DataFile(catfn))
+        else:
+            print('GenCat not produced as input_catalog does not exist')
+
 
 class GRcat(GenCat):
-    version="v2"
+    version = "v2"
 
     output_structure = "GNRL-REFR-CAT"
 
-    cat_attribute="_cat"
+    cat_attribute = "_cat"
     suffix = "_grcat"
 
-    def map_entry_to_fits_record(self,cat_entry,fits_record):
-        fits_record['RA_OBJ']=cat_entry['RA']
+    def map_entry_to_fits_record(self, cat_entry, fits_record):
+        fits_record['RA_OBJ'] = cat_entry['RA']
         fits_record['DEC_OBJ'] = cat_entry['DEC']
         fits_record['NAME'] = cat_entry['NAME']
         fits_record['SOURCE_ID'] = cat_entry['NAME']
         fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG', 1)
         fits_record['JEMX_FLAG'] = cat_entry.get('JEMX_FLAG', 1)
+        fits_record['FLAG'] = cat_entry.get('FLAG', 0)
         fits_record['ISGRI_FLAG2'] = cat_entry.get('ISGRI_FLAG', 0)
         fits_record['ISGR_FLUX_1'] = cat_entry.get('ISGRI_FLUX_1', 1000)
         fits_record['ISGR_FLUX_2'] = cat_entry.get('ISGRI_FLUX_2', 1000)
 
     @property
     def cat(self):
-        return self._cat.get_full_path()
+        if hasattr(self, '_cat'):
+            return self._cat.get_full_path()
+        else:
+            return None
+
 
 class GRcatForJEMX(GenCat):
     output_structure = "GNRL-REFR-CAT"
 
-    cat_attribute="_cat"
+    cat_attribute = "_cat"
     suffix = "_grcat_jemx"
-    
-    def map_entry_to_fits_record(self,cat_entry,fits_record):
-        fits_record['RA_OBJ']=cat_entry['RA']
+
+    def map_entry_to_fits_record(self, cat_entry, fits_record):
+        fits_record['RA_OBJ'] = cat_entry['RA']
         fits_record['DEC_OBJ'] = cat_entry['DEC']
         fits_record['NAME'] = cat_entry['NAME']
         fits_record['SOURCE_ID'] = cat_entry['NAME']
@@ -120,16 +135,21 @@ class GRcatForJEMX(GenCat):
 
     @property
     def cat(self):
-        return self._cat
+        if hasattr(self, '_cat'):
+            return self._cat
+        else:
+            return None
+
 
 class ExplicitISGRIRefCat(GRcat):
     suffix = "_igrcat"
+
 
 class CatForImage(GenCat):
     output_structure = "ISGR-SRCL-CAT"
     suffix = "_forimage"
 
-    def map_entry_to_fits_record(self,cat_entry,fits_record):
+    def map_entry_to_fits_record(self, cat_entry, fits_record):
         fits_record['RA_OBJ']=cat_entry['RA']
         fits_record['DEC_OBJ'] = cat_entry['DEC']
         fits_record['NAME'] = cat_entry['NAME']
@@ -142,7 +162,7 @@ class CatForSpectra(GenCat):
     output_structure = "ISGR-SRCL-RES"
     suffix = "_forspectra"
 
-    version="v1"
+    version = "v1"
 
     def map_entry_to_fits_record(self, cat_entry, fits_record):
         fits_record['RA_OBJ'] = cat_entry['RA']
@@ -154,30 +174,32 @@ class CatForSpectra(GenCat):
         fits_record['ISGRI_FLAG'] = cat_entry.get('ISGRI_FLAG', 1)
         fits_record['FLAG'] = cat_entry.get('FLAG', 1)
 
+
 class CatForLC(CatForSpectra):
     suffix = "_forlc"
 
+
 class ii_spectra_extract(ddosa.ii_spectra_extract):
-    input_cat=CatForSpectra
+    input_cat = CatForSpectra
+
 
 class ii_lc_extract(ddosa.ii_lc_extract):
-    input_cat=CatForSpectra
+    input_cat = CatForSpectra
+
 
 try:
     import ddjemx
 
     class UserCat(ddjemx.UserCat):
-        input_cat=GRcatForJEMX
+        input_cat = GRcatForJEMX
 
     class jemx_spe(ddjemx.jemx_spe):
-        input_usercat=UserCat
+        input_usercat = UserCat
 
     class jemx_lcr(ddjemx.jemx_lcr):
-        input_usercat=UserCat
+        input_usercat = UserCat
 
 except Exception as e:
-    print("not loading jemx")
-
-import dataanalysis.callback
+    print("not loading jemx", e)
 
 dataanalysis.callback.default_callback_filter.set_callback_accepted_classes([ii_spectra_extract, ii_lc_extract])
