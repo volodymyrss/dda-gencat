@@ -85,7 +85,7 @@ class GenCat(ddosa.DataAnalysis):
 
 
 class GRcat(GenCat):
-    version = "v2"
+    version = "v3"
 
     output_structure = "GNRL-REFR-CAT"
 
